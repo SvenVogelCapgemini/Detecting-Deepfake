@@ -1,0 +1,12 @@
+﻿@page
+@model Main_Node.Pages.TasksModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    ViewData["Title"] = "";
+}
+
+<form method="post">
+    URL:
+    <input asp-for="Task.URL" />
+    <input type="submit" />
+</form>
