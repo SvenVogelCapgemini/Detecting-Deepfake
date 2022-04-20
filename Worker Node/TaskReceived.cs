@@ -2,17 +2,17 @@
 
 namespace Worker_Node;
 
-internal class TaskRecieved
+internal class TaskReceived
 {
-    private readonly string _algorithm;
+    private readonly PythonScripts.ScriptType _algorithm;
     private readonly string _taskId;
     private readonly string _videoURL;
     private Status _status;
 
-    public TaskRecieved(string Id, string videoURL, string algo)
+    public TaskReceived(string Id, string videoURL, PythonScripts.ScriptType algo)
     {
         _taskId = Id;
-        _status = Status.Recieved;
+        _status = Status.Received;
         _videoURL = videoURL;
         _algorithm = algo;
     }
@@ -59,7 +59,7 @@ internal class TaskRecieved
             try
             {
                 await video.DeleteVideo(_taskId);
-                Console.WriteLine("video Deleted");
+                Console.WriteLine("Video Deleted");
             }
             catch (Exception e)
             {
@@ -72,7 +72,7 @@ internal class TaskRecieved
 
     private enum Status
     {
-        Recieved,
+        Received,
         Downloading,
         CheckingForDeepfake,
         Done,

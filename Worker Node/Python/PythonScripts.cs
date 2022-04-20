@@ -18,10 +18,10 @@ public class PythonScripts
         scripts[(int) ScriptType.test] = $"{Environment.CurrentDirectory}\\Python\\Scripts\\test.py";
     }
 
-    public string Run(string algorithm, string videopath)
+    public string Run(ScriptType algorithm, string videopath)
     {
         var pyPath = "C:\\Python\\python.exe";
-        var arguments = string.Format("\"{0}\" {1}", scripts[0], videopath);
+        var arguments = $"\"{scripts[(int) algorithm]}\" {videopath}";
 
         var startInfo = new ProcessStartInfo
         {

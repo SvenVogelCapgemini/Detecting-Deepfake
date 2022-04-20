@@ -9,16 +9,17 @@ internal class SignalRConnection
 
     private SignalRConnection()
     {
-        //prepare the hub connection
+        // Prepare the hub connection
         var hubAddress = "https://localhost:7062/taskHub";
         _connection = new HubConnectionBuilder().WithUrl(hubAddress).Build();
+        // When connection closed wait then reconnect
         _connection.Closed += async error =>
         {
             await Task.Delay(new Random().Next(0, 5) * 1000);
             await _connection.StartAsync();
         };
         CallBacks();
-        //connect to the HUB
+        // Connect to the HUB
         Task.Run(async () =>
         {
             try
@@ -40,29 +41,28 @@ internal class SignalRConnection
         await _connection.InvokeAsync("Result", id, result);
     }
 
+    public async void SendAlgorithms(int[] indexes, string description)
+    {
+        await _connection.InvokeAsync("ReceiveAlgorithms", indexes, description);
+    }
+
     private void CallBacks()
     {
-        //when connection closed wait then reconnect
-        
-
-        //when RecieveMessgage is recieved write the message
+        // When ReceiveMessage is received write the message
         _connection.On<string, string, string>("Task", (taskID, videoURL, algo) =>
         {
-            Console.WriteLine("recieved task");
-            var task = new TaskRecieved(taskID, videoURL, algo);
+            PythonScripts.ScriptType script = (PythonScripts.ScriptType)int.Parse(algo);
+            Console.WriteLine("Received task");
+            var task = new TaskReceived(taskID, videoURL, script);
             task.RunTask();
         });
 
         _connection.On<int>("ReceiveUserCount", (count) => { Console.WriteLine($"connected users: {count} "); });
 
-        _connection.On<string, string>("ReceiveMessage", (user, message) => { Console.WriteLine(message); });
+        // TODO: Send the algorithms back
+        _connection.On<string>("GetAlgorithms", (message) => { Console.WriteLine("SendThemAlgo"); });
     }
-
-    private enum MessageMethode
-    {
-        Result
-    }
-
+    
     private class Nested
     {
         internal static readonly SignalRConnection instance = new();
