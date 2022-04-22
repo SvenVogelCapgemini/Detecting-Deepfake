@@ -13,6 +13,7 @@ internal class TaskReceived
     {
         _taskId = Id;
         _status = Status.Received;
+        SignalRConnection.Instance.SendStatus(_taskId, _status);
         _videoURL = videoURL;
         _algorithm = algo;
     }
@@ -27,6 +28,7 @@ internal class TaskReceived
         {
             var download = video.GetVideo(_videoURL, _taskId);
             _status = Status.Downloading;
+            SignalRConnection.Instance.SendStatus(_taskId, _status);
             await download;
             file = download.Result;
         }
@@ -34,6 +36,7 @@ internal class TaskReceived
         catch (Exception)
         {
             _status = Status.Failed;
+            SignalRConnection.Instance.SendStatus(_taskId, _status);
             return false;
         }
 
@@ -42,8 +45,12 @@ internal class TaskReceived
             // run algorime on file
             var pythonScripts = new PythonScripts();
             _status = Status.CheckingForDeepfake;
+            SignalRConnection.Instance.SendStatus(_taskId, _status);
+
             var result = pythonScripts.Run(_algorithm, file);
             _status = Status.Done;
+            SignalRConnection.Instance.SendStatus(_taskId, _status);
+
             Console.WriteLine("done");
             //TODO: find a way to send the result back
             //SignalRConnection.Instance.SendResult(_taskId, result);
@@ -70,7 +77,7 @@ internal class TaskReceived
         
     }
 
-    private enum Status
+    public enum Status
     {
         Received,
         Downloading,

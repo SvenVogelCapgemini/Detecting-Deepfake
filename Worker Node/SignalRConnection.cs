@@ -38,7 +38,31 @@ internal class SignalRConnection
 
     public async void SendResult(string id, string result)
     {
-        await _connection.InvokeAsync("Result", id, result);
+        await _connection.InvokeAsync("SendResult", id, result);
+    }
+
+    public async Task<bool> SendStatus(string id, TaskReceived.Status status)
+    {
+        switch (status)
+        {
+            case TaskReceived.Status.Received:
+                await _connection.InvokeAsync("SendStatus", id, "Recieved");
+                break;
+            case TaskReceived.Status.Downloading:
+                await _connection.InvokeAsync("SendStatus", id, "Downloading Video");
+                break;
+            case TaskReceived.Status.Failed:
+                await _connection.InvokeAsync("SendStatus", id, "Failed");
+                break;
+            case TaskReceived.Status.Done:
+                await _connection.InvokeAsync("SendStatus", id, "Done");
+                break;
+            case TaskReceived.Status.CheckingForDeepfake:
+                await _connection.InvokeAsync("SendStatus", id, "Running Algorithm");
+                break;
+        }
+        return true;
+        
     }
 
     public async void SendAlgorithms(int[] indexes, string description)
@@ -51,6 +75,7 @@ internal class SignalRConnection
         // When ReceiveMessage is received write the message
         _connection.On<string, string, string>("Task", (taskID, videoURL, algo) =>
         {
+            Console.WriteLine($"id: {taskID}, URL: {videoURL}, algo: {algo}");
             PythonScripts.ScriptType script = (PythonScripts.ScriptType)int.Parse(algo);
             Console.WriteLine("Received task");
             var task = new TaskReceived(taskID, videoURL, script);

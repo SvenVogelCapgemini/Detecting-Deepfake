@@ -1,10 +1,16 @@
-﻿namespace Main_Node.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Main_Node.Models
 {
     public class Task
     {
-        public string Id { get; set; }
+        [Key]
+        public int Id { get; set; }
+        [Required(ErrorMessage = "URL Required")]
+        [Url]
         public string URL { get; set; }
+        [Required(ErrorMessage = "Methode Required")]
         public string Methode { get; set; }
-        public string Result { get; set; }
+        public string? Result { get; set; }
     }
 }
