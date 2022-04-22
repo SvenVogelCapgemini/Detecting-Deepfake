@@ -6,7 +6,7 @@ on: push
 jobs:
   tests:
     name: Unit Testing
-    runs-on: windows-latest
+    runs-on: self-hosted
     steps:
       - uses: actions/checkout@v2.1.0
       - run: dotnet test
