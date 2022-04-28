@@ -50,6 +50,8 @@ internal class TaskReceived
             var result = pythonScripts.Run(_algorithm, file);
             _status = Status.Done;
             SignalRConnection.Instance.SendStatus(_taskId, _status);
+            SignalRConnection.Instance.SendResult(_taskId, result);
+
 
             Console.WriteLine("done");
             //TODO: find a way to send the result back

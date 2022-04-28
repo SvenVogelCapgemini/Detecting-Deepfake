@@ -11,6 +11,7 @@ namespace Main_Node.Models
         public string URL { get; set; }
         [Required(ErrorMessage = "Methode Required")]
         public string Methode { get; set; }
+        public string? Status { get; set; }
         public string? Result { get; set; }
     }
 }

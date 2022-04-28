@@ -20,6 +20,7 @@ public class PythonScripts
 
     public string Run(ScriptType algorithm, string videopath)
     {
+        return "1";
         var pyPath = "C:\\Python\\python.exe";
         var arguments = $"\"{scripts[(int) algorithm]}\" {videopath}";
 

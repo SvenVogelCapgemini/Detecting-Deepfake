@@ -1,4 +1,4 @@
-﻿using Main_Node.Data;
+using Main_Node.Data;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
@@ -25,7 +25,7 @@ public class TaskHub : Hub
         using (db)
         {
             var task = db.Task.Where(d => d.Id == int.Parse(id)).First();
-            task.Result = status;
+            task.Status = status;
             db.SaveChanges();
         }
     }
