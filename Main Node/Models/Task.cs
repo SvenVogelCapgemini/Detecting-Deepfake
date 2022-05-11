@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Main_Node.Workers;
 
 namespace Main_Node.Models
 {
@@ -13,5 +14,6 @@ namespace Main_Node.Models
         public string Methode { get; set; }
         public string? Status { get; set; }
         public string? Result { get; set; }
+        public Worker? Worker;
     }
 }

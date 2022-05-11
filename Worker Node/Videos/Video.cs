@@ -1,4 +1,6 @@
-﻿namespace Worker_Node;
+﻿using System.Diagnostics;
+
+namespace Worker_Node;
 
 internal class Video
 {
@@ -8,13 +10,44 @@ internal class Video
         {
             var filepath = $"{Environment.CurrentDirectory}\\Videos\\temp";
             Directory.CreateDirectory(filepath);
-            var client = new HttpClient();
-            var response = await client.GetAsync(url);
-            response.EnsureSuccessStatusCode();
-            var data = await response.Content.ReadAsStreamAsync();
-            var ms = new MemoryStream();
-            data.CopyTo(ms);
-            File.WriteAllBytes($"{filepath}\\{id}.mp4", ms.ToArray());
+            var pyPath = "youtube-dl";
+            var arguments = $"-o \"{filepath}\\{id}.mp4\" --ffmpeg-location C:\\Users\\svenv\\Desktop\\ffmpeg-2022-05-08-git-f77ac5131c-essentials_build\\bin {url}";
+            var pythonProcess = new Process();
+            var startInfo = new ProcessStartInfo
+            {
+                UseShellExecute = false,
+                FileName = pyPath,
+                Arguments = arguments,
+                CreateNoWindow = false,
+                RedirectStandardInput = true,
+            };
+            await Task.Run(async () =>
+            {
+                
+                pythonProcess.StartInfo = startInfo;
+                pythonProcess.Start();
+                int i = 0;
+                while (!pythonProcess.HasExited)
+                {
+                    Console.WriteLine();
+                    Console.WriteLine();
+                    Console.WriteLine(i);
+                    Console.WriteLine(pythonProcess.HasExited);
+                    Console.WriteLine();
+                    Console.WriteLine();
+                    Console.WriteLine();
+                    if (i > 10)
+                        pythonProcess.Close();
+                    await Task.Delay(1000);
+                    i++;
+                }
+
+                await pythonProcess.WaitForExitAsync();
+                pythonProcess.Close();
+
+            });
+            
+            
             return $"{filepath}\\{id}.mp4";
         }
         catch (Exception e)
@@ -28,7 +61,7 @@ internal class Video
     {
         try
         {
-            File.Delete(Environment.CurrentDirectory + $"\\videos\\temp\\{id}.mp4");
+            //File.Delete(Environment.CurrentDirectory + $"\\videos\\temp\\{id}.mp4");
             return true;
         }
         catch (Exception e)

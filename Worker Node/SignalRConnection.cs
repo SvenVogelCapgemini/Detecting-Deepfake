@@ -38,7 +38,7 @@ internal class SignalRConnection
 
     public async void SendResult(string id, string result)
     {
-        await _connection.InvokeAsync("SendResult", id, result);
+        await _connection.InvokeAsync("ReceiveResult", id, result);
     }
 
     public async Task<bool> SendStatus(string id, TaskReceived.Status status)
@@ -46,19 +46,19 @@ internal class SignalRConnection
         switch (status)
         {
             case TaskReceived.Status.Received:
-                await _connection.InvokeAsync("SendStatus", id, "Recieved");
+                await _connection.InvokeAsync("ReceiveStatus", id, "Recieved");
                 break;
             case TaskReceived.Status.Downloading:
-                await _connection.InvokeAsync("SendStatus", id, "Downloading Video");
+                await _connection.InvokeAsync("ReceiveStatus", id, "Downloading Video");
                 break;
             case TaskReceived.Status.Failed:
-                await _connection.InvokeAsync("SendStatus", id, "Failed");
+                await _connection.InvokeAsync("ReceiveStatus", id, "Failed");
                 break;
             case TaskReceived.Status.Done:
-                await _connection.InvokeAsync("SendStatus", id, "Done");
+                await _connection.InvokeAsync("ReceiveStatus", id, "Done");
                 break;
             case TaskReceived.Status.CheckingForDeepfake:
-                await _connection.InvokeAsync("SendStatus", id, "Running Algorithm");
+                await _connection.InvokeAsync("ReceiveStatus", id, "Running Algorithm");
                 break;
         }
         return true;

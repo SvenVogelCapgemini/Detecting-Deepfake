@@ -8,8 +8,10 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Main_Node.Data;
 using Main_Node.Models;
+using Main_Node.Workers;
 using Microsoft.AspNetCore.SignalR;
 using SignalRChat.Hubs;
+using Task = Main_Node.Models.Task;
 
 namespace Main_Node.Controllers
 {
@@ -65,10 +67,18 @@ namespace Main_Node.Controllers
             {
                 _context.Add(task);
                 await _context.SaveChangesAsync();
-                await _hubContext.Clients.All.SendAsync("Task", task.Id.ToString(), task.URL, task.Methode);
+                WorkerController.Instance().SendTaskToRandomWorker(_hubContext, task);
+                //Queue.Enqueue(task);
                 return RedirectToAction(nameof(Index));
             }
             return View(task);
+        }
+
+        public Queue<Task> Queue = new Queue<Task>();
+
+        public async void SendTasks()
+        {
+            
         }
 
         // GET: Task/Edit/5

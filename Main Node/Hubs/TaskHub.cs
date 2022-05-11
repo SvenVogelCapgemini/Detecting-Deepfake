@@ -2,21 +2,15 @@ using Main_Node.Data;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
+using Main_Node.Workers;
 
 namespace SignalRChat.Hubs;
 
 public class TaskHub : Hub
 {
+    private WorkerController _workerController = WorkerController.Instance();
     
-    private static int _userCount;
-    public int UserCount => _userCount;
-
-    private async Task SendTask(string id, string url)
-    {
-        await Clients.All.SendAsync("Task", id, url);
-    }
-
-    public async Task SendStatus(string id, string status)
+    public async Task ReceiveStatus(string id, string status)
     {
         var optionsBuilder = new DbContextOptionsBuilder<TaskContext>();
         optionsBuilder.UseSqlite("Data Source=TaskDB.db;");
@@ -30,7 +24,8 @@ public class TaskHub : Hub
         }
     }
 
-    public async Task SendResult(string id, string result)
+    //recieves the status of the 
+    public async Task ReceiveResult(string id, string result)
     {
         var optionsBuilder = new DbContextOptionsBuilder<TaskContext>();
         optionsBuilder.UseSqlite("Data Source=TaskDB.db;");
@@ -46,15 +41,26 @@ public class TaskHub : Hub
 
     public override Task OnConnectedAsync()
     {
-        _userCount++;
-        Clients.All.SendAsync("ReceiveUserCount", _userCount);
+        Debug.WriteLine(Context.ConnectionId);
+        Worker worker = new Worker(Context.ConnectionId);
+        Clients.Clients(worker.Id).SendAsync("ReceiveUserCount", _workerController.WorkerCount);
+        _workerController.AddWorker(worker);
+        Clients.All.SendAsync("ReceiveUserCount", _workerController.WorkerCount);
         return base.OnConnectedAsync();
     }
 
     public override Task OnDisconnectedAsync(Exception? exception)
     {
-        _userCount--;
-        Clients.All.SendAsync("ReceiveUserCount", _userCount);
+        try
+        {
+            var worker = _workerController.GetWorker(Context.ConnectionId);
+            _workerController.RemoveWorker(worker);
+            Clients.All.SendAsync("ReceiveUserCount", _workerController.WorkerCount);
+        }
+        catch (Exception)
+        {
+            Debug.Fail("No id found");
+        }
         return base.OnDisconnectedAsync(exception);
     }
 }
