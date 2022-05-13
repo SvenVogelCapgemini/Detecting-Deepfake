@@ -6,13 +6,7 @@ namespace Worker_Node.Python.Tests;
 [TestFixture]
 public class PythonScriptsTests
 {
-    [SetUp]
-    public void PythonScriptsTest()
-    {
-        _scripts = new PythonScripts();
-    }
-
-    private PythonScripts _scripts;
+    private PythonScripts _scripts = new PythonScripts();
 
 
     [Test]

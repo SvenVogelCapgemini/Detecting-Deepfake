@@ -36,12 +36,12 @@ internal class SignalRConnection
 
     public static SignalRConnection Instance => Nested.instance;
 
-    public async void SendResult(string id, string result)
+    public async void SendResult(int id, string result)
     {
         await _connection.InvokeAsync("ReceiveResult", id, result);
     }
 
-    public async Task<bool> SendStatus(string id, TaskReceived.Status status)
+    public async Task<bool> SendStatus(int id, TaskReceived.Status status)
     {
         switch (status)
         {
@@ -73,7 +73,7 @@ internal class SignalRConnection
     private void CallBacks()
     {
         // When ReceiveMessage is received write the message
-        _connection.On<string, string, string>("Task", (taskID, videoURL, algo) =>
+        _connection.On<int, string, string>("Task", (taskID, videoURL, algo) =>
         {
             Console.WriteLine($"id: {taskID}, URL: {videoURL}, algo: {algo}");
             PythonScripts.ScriptType script = (PythonScripts.ScriptType)int.Parse(algo);

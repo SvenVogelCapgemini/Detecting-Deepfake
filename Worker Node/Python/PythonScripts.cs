@@ -7,19 +7,25 @@ public class PythonScripts
     public enum ScriptType
     {
         test,
-        testAlgo
+        alwaysFalse,
+        alwaysTrue
     }
 
     public string[] scripts;
 
     public PythonScripts()
     {
-        scripts = new string[1];
+        scripts = new string[3];
         scripts[(int) ScriptType.test] = $"{Environment.CurrentDirectory}\\Python\\Scripts\\test.py";
+        scripts[(int)ScriptType.alwaysFalse] = $"{Environment.CurrentDirectory}\\Python\\Scripts\\false.py";
+        scripts[(int)ScriptType.alwaysTrue] = $"{Environment.CurrentDirectory}\\Python\\Scripts\\true.py";
+
     }
 
     public string Run(ScriptType algorithm, string videopath)
     {
+        Console.WriteLine(algorithm);
+        Console.WriteLine(videopath);
         var pyPath = "python";
         var arguments = $"\"{scripts[(int) algorithm]}\" {videopath}";
 
@@ -34,8 +40,10 @@ public class PythonScripts
         var pythonProcess = Process.Start(startInfo);
 
         var output = pythonProcess.StandardOutput.ReadToEnd().Trim();
+        pythonProcess.WaitForExit();
+        Console.WriteLine(output);
         return output;
 
-        pythonProcess.WaitForExit();
+       
     }
 }

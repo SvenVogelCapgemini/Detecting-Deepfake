@@ -1,17 +1,19 @@
 ﻿using System.Diagnostics;
+using System.Linq;
 
-namespace Worker_Node;
+namespace Worker_Node.Video;
 
-internal class Video
+public class Video
 {
-    public async Task<string> GetVideo(string url, string id)
+    public static async Task<string> GetVideo(string url, int id)
     {
         try
         {
             var filepath = $"{Environment.CurrentDirectory}\\Videos\\temp";
+            var ffmpegpath = $"{Environment.CurrentDirectory}\\Videos\\ffmpeg";
             Directory.CreateDirectory(filepath);
-            var pyPath = "youtube-dl";
-            var arguments = $"-o \"{filepath}\\{id}.mp4\" --ffmpeg-location C:\\Users\\svenv\\Desktop\\ffmpeg-2022-05-08-git-f77ac5131c-essentials_build\\bin {url}";
+            var pyPath = "yt-dlp";
+            var arguments = $"-o \"{filepath}\\{id}.mp4\" -f mp4 --no-playlist --ffmpeg-location \"{ffmpegpath}\" {url}";
             var pythonProcess = new Process();
             var startInfo = new ProcessStartInfo
             {
@@ -21,33 +23,14 @@ internal class Video
                 CreateNoWindow = false,
                 RedirectStandardInput = true,
             };
-            await Task.Run(async () =>
-            {
-                
-                pythonProcess.StartInfo = startInfo;
-                pythonProcess.Start();
-                int i = 0;
-                while (!pythonProcess.HasExited)
-                {
-                    Console.WriteLine();
-                    Console.WriteLine();
-                    Console.WriteLine(i);
-                    Console.WriteLine(pythonProcess.HasExited);
-                    Console.WriteLine();
-                    Console.WriteLine();
-                    Console.WriteLine();
-                    if (i > 10)
-                        pythonProcess.Close();
-                    await Task.Delay(1000);
-                    i++;
-                }
 
-                await pythonProcess.WaitForExitAsync();
-                pythonProcess.Close();
+            pythonProcess.StartInfo = startInfo;
+            pythonProcess.Start();
 
-            });
-            
-            
+            await pythonProcess.WaitForExitAsync();
+            pythonProcess.Close();
+
+
             return $"{filepath}\\{id}.mp4";
         }
         catch (Exception e)
@@ -57,11 +40,11 @@ internal class Video
         }
     }
 
-    public async Task<bool> DeleteVideo(string id)
+    public static async Task<bool> DeleteVideo(int id)
     {
         try
         {
-            //File.Delete(Environment.CurrentDirectory + $"\\videos\\temp\\{id}.mp4");
+            File.Delete(Environment.CurrentDirectory + $"\\videos\\temp\\{id}.mp4");
             return true;
         }
         catch (Exception e)

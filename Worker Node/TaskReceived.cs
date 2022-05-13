@@ -5,11 +5,11 @@ namespace Worker_Node;
 internal class TaskReceived
 {
     private readonly PythonScripts.ScriptType _algorithm;
-    private readonly string _taskId;
+    private readonly int _taskId;
     private readonly string _videoURL;
     private Status _status;
 
-    public TaskReceived(string Id, string videoURL, PythonScripts.ScriptType algo)
+    public TaskReceived(int Id, string videoURL, PythonScripts.ScriptType algo)
     {
         _taskId = Id;
         _status = Status.Received;
@@ -22,11 +22,10 @@ internal class TaskReceived
     {
         bool madeit = false;
         // Download the video
-        var video = new Video();
         var file = "";
         try
         {
-            var download = video.GetVideo(_videoURL, _taskId);
+            var download = Video.Video.GetVideo(_videoURL, _taskId);
             _status = Status.Downloading;
             SignalRConnection.Instance.SendStatus(_taskId, _status);
             await download;
@@ -67,7 +66,7 @@ internal class TaskReceived
         {
             try
             {
-                await video.DeleteVideo(_taskId);
+                await Video.Video.DeleteVideo(_taskId);
                 Console.WriteLine("Video Deleted");
             }
             catch (Exception e)

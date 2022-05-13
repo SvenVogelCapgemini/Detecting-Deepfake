@@ -21,8 +21,23 @@
 		</Folder>
 	</ItemGroup>
 	<ItemGroup>
+	  <None Update="Python\Scripts\true.py">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="Python\Scripts\false.py">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
 	  <None Update="Python\Scripts\test.py">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="Videos\ffmpeg\ffmpeg.exe">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	  <None Update="Videos\ffmpeg\ffplay.exe">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	  <None Update="Videos\ffmpeg\ffprobe.exe">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </None>
 	</ItemGroup>
 </Project>

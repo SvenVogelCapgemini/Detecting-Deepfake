@@ -3,14 +3,15 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using Main_Node.Workers;
+using Main_Node.Tasks;
 
 namespace SignalRChat.Hubs;
 
 public class TaskHub : Hub
 {
     private WorkerController _workerController = WorkerController.Instance();
-    
-    public async Task ReceiveStatus(string id, string status)
+
+    public void ReceiveStatus(int id, string status)
     {
         var optionsBuilder = new DbContextOptionsBuilder<TaskContext>();
         optionsBuilder.UseSqlite("Data Source=TaskDB.db;");
@@ -18,25 +19,16 @@ public class TaskHub : Hub
         Debug.WriteLine(status);
         using (db)
         {
-            var task = db.Task.Where(d => d.Id == int.Parse(id)).First();
+            var task = db.Task.Where(d => d.Id == id).First();
             task.Status = status;
             db.SaveChanges();
         }
     }
 
     //recieves the status of the 
-    public async Task ReceiveResult(string id, string result)
+    public void ReceiveResult(int id, string result)
     {
-        var optionsBuilder = new DbContextOptionsBuilder<TaskContext>();
-        optionsBuilder.UseSqlite("Data Source=TaskDB.db;");
-        var db = new TaskContext(optionsBuilder.Options);
-        Debug.WriteLine(result);
-        using (db)
-        {
-            var task = db.Task.Where(d => d.Id == int.Parse(id)).First();
-            task.Result = result;
-            db.SaveChanges();
-        }
+        WorkingTasksController.Instance().TaskDone(id, result);
     }
 
     public override Task OnConnectedAsync()

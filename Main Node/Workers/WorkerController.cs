@@ -35,17 +35,21 @@ namespace Main_Node.Workers
 
 
 
-        public async Task<Worker> SendTaskToRandomWorker(IHubContext<TaskHub> hub, Models.Task task)
+        public async Task<Worker?> SendTaskToRandomWorker(IHubContext<TaskHub> hub, Models.Task task)
         {
-            var r = random.Next(WorkerCount);
+            while (AvailableWorkers < 1)
+            {
+                await Task.Delay(1000);
+            }
+            var r = random.Next(AvailableWorkers);
             Debug.WriteLine(r);
-            var worker = await workers[r].SendTask(hub, task);
+            var worker = await workers.Where(i => i.State == State.Idle).ToArray()[r].SendTask(hub, task);
             return worker;
         }
 
-        public void TaskDone()
+        public void TaskDone(Models.Task task)
         {
-            
+            task.Worker.TaskDone();
         }
 
         public void AddWorker(Worker worker)
