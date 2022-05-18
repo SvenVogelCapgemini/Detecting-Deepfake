@@ -4,6 +4,15 @@ namespace Worker_Node;
 
 internal class TaskReceived
 {
+    public enum Status
+    {
+        Received,
+        Downloading,
+        CheckingForDeepfake,
+        Done,
+        Failed
+    }
+
     private readonly PythonScripts.ScriptType _algorithm;
     private readonly int _taskId;
     private readonly string _videoURL;
@@ -13,21 +22,21 @@ internal class TaskReceived
     {
         _taskId = Id;
         _status = Status.Received;
-        SignalRConnection.Instance.SendStatus(_taskId, _status);
+        SignalRConnection.Instance().SendStatus(_taskId, _status);
         _videoURL = videoURL;
         _algorithm = algo;
     }
 
     public async Task<bool> RunTask()
     {
-        bool madeit = false;
+        var madeit = false;
         // Download the video
         var file = "";
         try
         {
             var download = Video.Video.GetVideo(_videoURL, _taskId);
             _status = Status.Downloading;
-            SignalRConnection.Instance.SendStatus(_taskId, _status);
+            SignalRConnection.Instance().SendStatus(_taskId, _status);
             await download;
             file = download.Result;
         }
@@ -35,7 +44,7 @@ internal class TaskReceived
         catch (Exception)
         {
             _status = Status.Failed;
-            SignalRConnection.Instance.SendStatus(_taskId, _status);
+            SignalRConnection.Instance().SendStatus(_taskId, _status);
             return false;
         }
 
@@ -44,12 +53,12 @@ internal class TaskReceived
             // run algorime on file
             var pythonScripts = new PythonScripts();
             _status = Status.CheckingForDeepfake;
-            SignalRConnection.Instance.SendStatus(_taskId, _status);
+            SignalRConnection.Instance().SendStatus(_taskId, _status);
 
             var result = pythonScripts.Run(_algorithm, file);
             _status = Status.Done;
-            SignalRConnection.Instance.SendStatus(_taskId, _status);
-            SignalRConnection.Instance.SendResult(_taskId, result);
+            SignalRConnection.Instance().SendStatus(_taskId, _status);
+            SignalRConnection.Instance().SendResult(_taskId, result);
 
 
             Console.WriteLine("done");
@@ -74,16 +83,7 @@ internal class TaskReceived
                 Console.WriteLine(e);
             }
         }
-        return madeit;
-        
-    }
 
-    public enum Status
-    {
-        Received,
-        Downloading,
-        CheckingForDeepfake,
-        Done,
-        Failed
+        return madeit;
     }
 }

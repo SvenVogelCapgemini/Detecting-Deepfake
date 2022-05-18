@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using System.Linq;
 
 namespace Worker_Node.Video;
 
@@ -13,7 +12,8 @@ public class Video
             var ffmpegpath = $"{Environment.CurrentDirectory}\\Videos\\ffmpeg";
             Directory.CreateDirectory(filepath);
             var pyPath = "yt-dlp";
-            var arguments = $"-o \"{filepath}\\{id}.mp4\" -f mp4 --no-playlist --ffmpeg-location \"{ffmpegpath}\" {url}";
+            var arguments =
+                $"-o \"{filepath}\\{id}.mp4\" -f mp4 --no-playlist --ffmpeg-location \"{ffmpegpath}\" {url}";
             var pythonProcess = new Process();
             var startInfo = new ProcessStartInfo
             {
@@ -21,7 +21,7 @@ public class Video
                 FileName = pyPath,
                 Arguments = arguments,
                 CreateNoWindow = false,
-                RedirectStandardInput = true,
+                RedirectStandardInput = true
             };
 
             pythonProcess.StartInfo = startInfo;

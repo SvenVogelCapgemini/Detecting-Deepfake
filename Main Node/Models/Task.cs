@@ -1,19 +1,21 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Main_Node.Workers;
 
-namespace Main_Node.Models
+namespace Main_Node.Models;
+
+public class Task
 {
-    public class Task
-    {
-        [Key]
-        public int Id { get; set; }
-        [Required(ErrorMessage = "URL Required")]
-        [Url]
-        public string URL { get; set; }
-        [Required(ErrorMessage = "Methode Required")]
-        public string Methode { get; set; }
-        public string? Status { get; set; }
-        public string? Result { get; set; }
-        public Worker? Worker;
-    }
+    public Worker? Worker;
+
+    [Key] public int Id { get; set; }
+
+    [Required(ErrorMessage = "URL Required")]
+    [Url]
+    public string URL { get; set; }
+
+    [Required(ErrorMessage = "Methode Required")]
+    public string Methode { get; set; }
+
+    public string? Status { get; set; }
+    public string? Result { get; set; }
 }

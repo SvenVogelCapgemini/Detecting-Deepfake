@@ -15,7 +15,7 @@ public class PythonScriptsTests
     {
         var random = Randomizer.CreateRandomizer();
         var input = random.GetString(args);
-        var output = _scripts.Run(PythonScripts.ScriptType.test, input);
+        var output = _scripts.Run(PythonScripts.ScriptType.Test, input);
         Assert.AreEqual(input, output);
     }
 }

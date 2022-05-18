@@ -1,22 +1,21 @@
+using System.Diagnostics;
 using Main_Node.Data;
+using Main_Node.Tasks;
+using Main_Node.Workers;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
-using System.Diagnostics;
-using Main_Node.Workers;
-using Main_Node.Tasks;
 
 namespace SignalRChat.Hubs;
 
 public class TaskHub : Hub
 {
-    private WorkerController _workerController = WorkerController.Instance();
+    private readonly WorkerController _workerController = WorkerController.Instance();
 
     public void ReceiveStatus(int id, string status)
     {
         var optionsBuilder = new DbContextOptionsBuilder<TaskContext>();
         optionsBuilder.UseSqlite("Data Source=TaskDB.db;");
         var db = new TaskContext(optionsBuilder.Options);
-        Debug.WriteLine(status);
         using (db)
         {
             var task = db.Task.Where(d => d.Id == id).First();
@@ -33,9 +32,7 @@ public class TaskHub : Hub
 
     public override Task OnConnectedAsync()
     {
-        Debug.WriteLine(Context.ConnectionId);
-        Worker worker = new Worker(Context.ConnectionId);
-        Clients.Clients(worker.Id).SendAsync("ReceiveUserCount", _workerController.WorkerCount);
+        var worker = new Worker(Context.ConnectionId);
         _workerController.AddWorker(worker);
         Clients.All.SendAsync("ReceiveUserCount", _workerController.WorkerCount);
         return base.OnConnectedAsync();
@@ -53,6 +50,7 @@ public class TaskHub : Hub
         {
             Debug.Fail("No id found");
         }
+
         return base.OnDisconnectedAsync(exception);
     }
 }

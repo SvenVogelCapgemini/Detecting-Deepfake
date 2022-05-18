@@ -1,16 +1,19 @@
 ﻿using Microsoft.AspNetCore.SignalR.Client;
 using Worker_Node.Python;
+using Worker_Node.Settings;
 
 namespace Worker_Node;
 
 internal class SignalRConnection
 {
+    private static readonly object locker = new();
+    private static SignalRConnection instance;
     private readonly HubConnection _connection;
 
-    private SignalRConnection()
+    protected SignalRConnection()
     {
         // Prepare the hub connection
-        var hubAddress = "https://localhost:7062/taskHub";
+        var hubAddress = SettingsSetup.Instance().Setting.HubIp;
         _connection = new HubConnectionBuilder().WithUrl(hubAddress).Build();
         // When connection closed wait then reconnect
         _connection.Closed += async error =>
@@ -34,7 +37,6 @@ internal class SignalRConnection
         });
     }
 
-    public static SignalRConnection Instance => Nested.instance;
 
     public async void SendResult(int id, string result)
     {
@@ -61,8 +63,8 @@ internal class SignalRConnection
                 await _connection.InvokeAsync("ReceiveStatus", id, "Running Algorithm");
                 break;
         }
+
         return true;
-        
     }
 
     public async void SendAlgorithms(int[] indexes, string description)
@@ -76,26 +78,26 @@ internal class SignalRConnection
         _connection.On<int, string, string>("Task", (taskID, videoURL, algo) =>
         {
             Console.WriteLine($"id: {taskID}, URL: {videoURL}, algo: {algo}");
-            PythonScripts.ScriptType script = (PythonScripts.ScriptType)int.Parse(algo);
+            var script = (PythonScripts.ScriptType) int.Parse(algo);
             Console.WriteLine("Received task");
             var task = new TaskReceived(taskID, videoURL, script);
             task.RunTask();
         });
 
-        _connection.On<int>("ReceiveUserCount", (count) => { Console.WriteLine($"connected users: {count} "); });
+        _connection.On<int>("ReceiveUserCount", count => { Console.WriteLine($"connected users: {count} "); });
 
         // TODO: Send the algorithms back
-        _connection.On<string>("GetAlgorithms", (message) => { Console.WriteLine("SendThemAlgo"); });
+        _connection.On<string>("GetAlgorithms", message => { Console.WriteLine("SendThemAlgo"); });
     }
-    
-    private class Nested
-    {
-        internal static readonly SignalRConnection instance = new();
 
-        // Explicit static constructor to tell C# compiler
-        // not to mark type as beforefieldinit
-        static Nested()
-        {
-        }
+    public static SignalRConnection Instance()
+    {
+        if (instance == null)
+            lock (locker)
+            {
+                if (instance == null) instance = new SignalRConnection();
+            }
+
+        return instance;
     }
 }

@@ -1,15 +1,13 @@
-﻿using SignalRChat.Hubs;
+﻿using Main_Node.Data;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Main_Node.Data;
-using Microsoft.AspNetCore.SignalR;
+using SignalRChat.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
 
 builder.Services.AddDbContext<TaskContext>(options =>
-
-    options.UseSqlite(builder.Configuration.GetConnectionString("TaskContext") ?? throw new InvalidOperationException("Connection string 'TaskContext' not found.")));
+    options.UseSqlite(builder.Configuration.GetConnectionString("TaskContext") ??
+                      throw new InvalidOperationException("Connection string 'TaskContext' not found.")));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -32,8 +30,8 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    "default",
+    "{controller=Home}/{action=Index}/{id?}");
 app.MapHub<TaskHub>("/taskHub");
 
 app.Run();

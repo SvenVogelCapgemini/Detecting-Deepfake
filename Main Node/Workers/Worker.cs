@@ -1,31 +1,33 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.SignalR;
 using SignalRChat.Hubs;
+using Task = Main_Node.Models.Task;
 
 namespace Main_Node.Workers;
 
 public class Worker
 {
     public List<Algorithm> Algorithms;
-    private State _state;
-    public State State => _state;
-    public string Id { get; }
 
     public Worker(string id)
     {
         Algorithms = new List<Algorithm>();
         Id = id;
-        _state = State.Idle;
+        State = State.Idle;
     }
+
+    public State State { get; private set; }
+
+    public string Id { get; }
 
     public void AddAlgorithms(Algorithm algorithm)
     {
         Algorithms.Add(algorithm);
     }
 
-    public async Task<Worker> SendTask(IHubContext<TaskHub> hub, Models.Task task)
+    public async Task<Worker> SendTask(IHubContext<TaskHub> hub, Task task)
     {
-        _state = State.Busy;
+        State = State.Busy;
         Debug.WriteLine("Send Message");
         Debug.WriteLine(Id);
         await hub.Clients.Client(Id).SendAsync("Task", task.Id, task.URL, task.Methode);
@@ -34,7 +36,7 @@ public class Worker
 
     public void TaskDone()
     {
-        _state = State.Idle;
+        State = State.Idle;
     }
 }
 

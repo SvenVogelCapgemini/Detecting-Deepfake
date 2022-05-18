@@ -6,20 +6,23 @@ public class PythonScripts
 {
     public enum ScriptType
     {
-        test,
-        alwaysFalse,
-        alwaysTrue
+        Test,
+        AlwaysFalse,
+        AlwaysTrue,
+        XceptionNet
     }
 
-    public string[] scripts;
+    public List<string> Scripts;
 
     public PythonScripts()
     {
-        scripts = new string[3];
-        scripts[(int) ScriptType.test] = $"{Environment.CurrentDirectory}\\Python\\Scripts\\test.py";
-        scripts[(int)ScriptType.alwaysFalse] = $"{Environment.CurrentDirectory}\\Python\\Scripts\\false.py";
-        scripts[(int)ScriptType.alwaysTrue] = $"{Environment.CurrentDirectory}\\Python\\Scripts\\true.py";
-
+        Scripts = new List<string>
+        {
+            $"{Environment.CurrentDirectory}\\Python\\Scripts\\test.py",
+            $"{Environment.CurrentDirectory}\\Python\\Scripts\\false.py",
+            $"{Environment.CurrentDirectory}\\Python\\Scripts\\true.py",
+            $"{Environment.CurrentDirectory}\\Python\\Scripts\\XceptionNet\\Start.py"
+        };
     }
 
     public string Run(ScriptType algorithm, string videopath)
@@ -27,7 +30,7 @@ public class PythonScripts
         Console.WriteLine(algorithm);
         Console.WriteLine(videopath);
         var pyPath = "python";
-        var arguments = $"\"{scripts[(int) algorithm]}\" {videopath}";
+        var arguments = $"\"{Scripts[(int) algorithm]}\" \"{videopath}\"";
 
         var startInfo = new ProcessStartInfo
         {
@@ -44,6 +47,5 @@ public class PythonScripts
         Console.WriteLine(output);
         return output;
 
-       
     }
 }
