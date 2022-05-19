@@ -9,8 +9,9 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None
-			Include="Python\Scripts\XceptionNet\venv\Lib\site-packages\numpy\.libs\libopenblas.EL2C6PLE4ZYW3ECEVIV3OXXGRN2NRFM2.gfortran-win_amd64.dll" />
+	  <Compile Remove="Python\Scripts\XceptionNet\venv\**" />
+	  <EmbeddedResource Remove="Python\Scripts\XceptionNet\venv\**" />
+	  <None Remove="Python\Scripts\XceptionNet\venv\**" />
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="6.0.0" />
@@ -18,7 +19,6 @@
 		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.3" />
 	</ItemGroup>
 	<ItemGroup>
-		<Folder Include="Python\Scripts\XceptionNet\venv\Include\" />
 		<None Update="Python\Scripts\**">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>

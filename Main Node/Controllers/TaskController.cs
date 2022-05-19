@@ -18,6 +18,7 @@ public class TaskController : Controller
     {
         _hubContext = hubContext;
         _context = context;
+        WorkingTasksController.Instance();
     }
 
     // GET: Task

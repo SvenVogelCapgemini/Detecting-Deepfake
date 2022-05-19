@@ -22,7 +22,7 @@ public class WorkingTasksController
         var db = new TaskContext(optionsBuilder.Options);
         using (db)
         {
-            var dbtasks = db.Task.Where(d => d.Status != "Done" || d.Status != "Failed").ToList();
+            var dbtasks = db.Task.Where(d => d.Status != "Done" && d.Status != "Failed").ToList();
             foreach (var task in dbtasks)
             {
                 task.Status = "Failed";
