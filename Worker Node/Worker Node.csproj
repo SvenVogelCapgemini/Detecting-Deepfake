@@ -6,6 +6,7 @@
 		<RootNamespace>Worker_Node</RootNamespace>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
+		<StartupObject></StartupObject>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -29,6 +30,9 @@
 	<ItemGroup>
 		<None Update="Python\Scripts\**">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="requirements.txt">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
 		<None Update="Videos\ffmpeg\ffmpeg.exe">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
