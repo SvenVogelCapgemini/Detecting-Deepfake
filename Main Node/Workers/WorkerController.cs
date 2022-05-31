@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using Main_Node.Models;
 using Microsoft.AspNetCore.SignalR;
 using SignalRChat.Hubs;
 using Task = Main_Node.Models.Task;
@@ -43,7 +44,16 @@ public class WorkerController
 
     public void TaskDone(Task task)
     {
-        task.Worker.TaskDone();
+        if (task is SubTask)
+        {
+            var subTask = (SubTask)task;
+            subTask.Worker.TaskDone();
+        }
+        else if (task is SingleTask)
+        {
+            var singleTask = (SingleTask)task;
+            singleTask.Worker.TaskDone();
+        }
     }
 
     public void AddWorker(Worker worker)

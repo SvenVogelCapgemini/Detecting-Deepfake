@@ -30,7 +30,7 @@ public class Worker
         State = State.Busy;
         Debug.WriteLine("Send Message");
         Debug.WriteLine(Id);
-        await hub.Clients.Client(Id).SendAsync("Task", task.Id, task.URL, task.Methode);
+        await hub.Clients.Client(Id).SendAsync("Task", task.Id, task.URL, Convert.ToInt32(task.Method).ToString());
         return this;
     }
 

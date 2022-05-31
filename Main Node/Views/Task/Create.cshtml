@@ -11,16 +11,18 @@
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="URL" class="control-label"></label>
-                <input asp-for="URL" class="form-control"/>
-                <span asp-validation-for="URL" class="text-danger"></span>
+                <label for="furl" class="control-label">URL</label>
+                <input type="url" id="furl" name="URL"/>
             </div>
             <div class="form-group">
-                <label asp-for="Methode" class="control-label"></label>
-                <input asp-for="Methode" class="form-control"/>
-                <span asp-validation-for="Methode" class="text-danger"></span>
+                <label for="fmethod" class="control-label">Methode</label>
+                <select id="fmethod"  name="Method" class="form-control">
+                    <option value="1">Allways True</option>
+                    <option value="2">Allways False</option>
+                    <option value="3">XceptionNet</option>
+                    <option value="4" selected>Run All</option>
+                </select>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary"/>

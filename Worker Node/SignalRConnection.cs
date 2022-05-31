@@ -14,7 +14,17 @@ internal class SignalRConnection
     {
         // Prepare the hub connection
         var hubAddress = SettingsSetup.Instance().Setting.HubIp;
-        _connection = new HubConnectionBuilder().WithUrl(hubAddress).Build();
+        _connection = new HubConnectionBuilder().WithUrl(hubAddress, (opts) =>
+        {
+            opts.HttpMessageHandlerFactory = (message) =>
+            {
+                if (message is HttpClientHandler clientHandler)
+                    // always verify the SSL certificate
+                    clientHandler.ServerCertificateCustomValidationCallback +=
+                        (sender, certificate, chain, sslPolicyErrors) => { return true; };
+                return message;
+            };
+        }).Build();
         // When connection closed wait then reconnect
         _connection.Closed += async error =>
         {

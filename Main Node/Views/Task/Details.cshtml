@@ -1,4 +1,7 @@
-﻿@model Main_Node.Models.Task
+﻿@using Main_Node.Data
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model Main_Node.Models.Task
 
 @{
     ViewData["Title"] = "Details";
@@ -23,10 +26,10 @@
             @Html.DisplayFor(model => model.URL)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Methode)
+            @Html.DisplayNameFor(model => model.Method)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Methode)
+            @Html.DisplayFor(model => model.Method)
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Result)
@@ -34,9 +37,33 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Result)
         </dd>
+        @if (Model is MultipleTasks multipletask)
+        {
+            foreach (SubTask subTask in multipletask.Tasks)
+            {
+                <hr />
+                <dt class="col-sm-2">
+                    Id
+                </dt>
+                <dd class="col-sm-10">
+                    @subTask.Id
+                </dd>
+                <dt class="col-sm-2">
+                    Methode
+                </dt>
+                <dd class="col-sm-10">
+                    @subTask.Method
+                </dd>
+                <dt class="col-sm-2">
+                    Result
+                </dt>
+                <dd class="col-sm-10">
+                    @subTask.Result
+                </dd>
+            }
+        }
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>

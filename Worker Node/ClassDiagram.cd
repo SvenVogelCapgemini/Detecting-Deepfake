@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Worker_Node.Python.PythonScripts">
+    <Position X="5.5" Y="1.25" Width="1.5" />
+    <NestedTypes>
+      <Enum Name="Worker_Node.Python.PythonScripts.ScriptType" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Python\PythonScripts.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAI=</HashCode>
+      <FileName>Python\PythonScripts.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Worker_Node.Settings.Setting">
+    <Position X="7.25" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAA=</HashCode>
+      <FileName>Settings\Setting.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Worker_Node.Settings.SettingsSetup">
+    <Position X="9" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAIAAACAAAAIAAAAAAAAAAAAABBAAAAQAAAAABAAAA=</HashCode>
+      <FileName>Settings\SettingsSetup.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Worker_Node.Video.Video">
+    <Position X="9" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Videos\Video.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Worker_Node.SignalRConnection">
+    <Position X="5.25" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAABAAAAIEAAAAAAAAAAAABEAAAAQAAAAAgABAA=</HashCode>
+      <FileName>SignalRConnection.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Worker_Node.TaskReceived">
+    <Position X="7.25" Y="3.75" Width="1.5" />
+    <NestedTypes>
+      <Enum Name="Worker_Node.TaskReceived.Status" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>TaskReceived.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AEAAgAAAAAAAAAAgAAAAAAAAAAAAAAAAAIAAAAAQAAA=</HashCode>
+      <FileName>TaskReceived.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
