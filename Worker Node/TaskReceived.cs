@@ -1,4 +1,5 @@
 ﻿using Worker_Node.Python;
+using Worker_Node.Videos;
 
 namespace Worker_Node;
 
@@ -34,7 +35,7 @@ internal class TaskReceived
         var file = "";
         try
         {
-            var download = Video.Video.GetVideo(_videoURL, _taskId);
+            var download = Video.GetVideo(_videoURL, _taskId);
             _status = Status.Downloading;
             SignalRConnection.Instance().SendStatus(_taskId, _status);
             await download;
@@ -62,9 +63,6 @@ internal class TaskReceived
 
 
             Console.WriteLine("done");
-            //TODO: find a way to send the result back
-            //SignalRConnection.Instance.SendResult(_taskId, result);
-            Console.WriteLine(result);
             madeit = true;
         }
         catch (Exception e)
@@ -75,7 +73,7 @@ internal class TaskReceived
         {
             try
             {
-                await Video.Video.DeleteVideo(_taskId);
+                Video.DeleteVideo(_taskId);
                 Console.WriteLine("Video Deleted");
             }
             catch (Exception e)

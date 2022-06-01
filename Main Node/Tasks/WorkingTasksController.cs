@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using Main_Node.Data;
+﻿using Main_Node.Data;
 using Main_Node.Models;
 using Main_Node.Workers;
 using Microsoft.AspNetCore.SignalR;
@@ -49,32 +48,30 @@ public class WorkingTasksController
     {
         Tasks.Add(task);
         if (task is MultipleTasks multipleTasks)
-        {
             foreach (var task1 in multipleTasks.Tasks)
             {
                 var subtask = (SubTask)task1;
                 Tasks.Add(subtask);
                 subtask.Worker = WorkerController.Instance().SendTaskToRandomWorker(hubContext, subtask).Result;
             }
-        }
         else if (task is SingleTask singleTask)
-        {
             singleTask.Worker = WorkerController.Instance().SendTaskToRandomWorker(hubContext, singleTask).Result;
-        }
-
     }
 
-    // used to complete a MultipleTasks
+    /// <summary>
+    ///     Updates a MultipleTask upon completion of one of the SubTasks.
+    /// </summary>
+    /// <param name="task"></param>
     public void MultipleTaskDone(MultipleTasks task)
     {
+        // get all the results of the results that aren't null from the SubTasks
         var resultsstrings = task.Tasks.Where(t => t.Result != null).Select(t => t.Result).ToList();
         var results = new List<float>();
-        foreach (var result in resultsstrings)
-        {
-            results.Add(float.Parse(result));
-        }
+        // Change all the strings to floats
+        foreach (var result in resultsstrings) results.Add(float.Parse(result));
+        // get the average of the floats
         task.Result = results.Average().ToString();
-        
+        // Update the task in the database 
         var optionsBuilder = new DbContextOptionsBuilder<TaskContext>();
         optionsBuilder.UseSqlite("Data Source=TaskDB.db;");
         var db = new TaskContext(optionsBuilder.Options);
@@ -84,6 +81,8 @@ public class WorkingTasksController
             taskdb.Result = task.Result;
             db.SaveChanges();
         }
+
+        // If all the SubTasks have a result mark the task as Done
         if (task.Tasks.All(t => t.Result != null))
         {
             optionsBuilder = new DbContextOptionsBuilder<TaskContext>();
@@ -95,35 +94,47 @@ public class WorkingTasksController
                 taskdb.Status = "Done";
                 db.SaveChanges();
             }
+            // Remove The Tasks from the list
+            foreach (var subTask in task.Tasks) Tasks.Remove(subTask);
+            Tasks.Remove(task);
         }
     }
 
-    // used to complete a SingleTask and SubTask
+    /// <summary>
+    ///     Used to mark a SingleTask and SubTask for Completion.
+    ///     Frees up the worker used for the task and if required updates the parentTask.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="result"></param>
     public void TaskDone(int id, string result)
     {
-            
-            var optionsBuilder = new DbContextOptionsBuilder<TaskContext>();
-            optionsBuilder.UseSqlite("Data Source=TaskDB.db;");
-            var db = new TaskContext(optionsBuilder.Options);
-            using (db)
-            {
-                var taskdb = db.Task.Where(d => d.Id == id).First();
-                taskdb.Result = result;
-                db.SaveChanges();
-            }
+        // Update the result in the database
+        var optionsBuilder = new DbContextOptionsBuilder<TaskContext>();
+        optionsBuilder.UseSqlite("Data Source=TaskDB.db;");
+        var db = new TaskContext(optionsBuilder.Options);
+        using (db)
+        {
+            var taskdb = db.Task.Where(d => d.Id == id).First();
+            taskdb.Result = result;
+            db.SaveChanges();
+        }
 
-            var task = Tasks.Where(t => t.Id == id).First();
-            task.Result = result;
-            if (task is SubTask)
-            {
-                var subtask = (SubTask)task;
-                subtask.Worker.TaskDone();
-                MultipleTaskDone((MultipleTasks) subtask.ParentTask);
-            }
-            else if (task is SingleTask)
-            {
-                var singletask = (SingleTask)task;
-                singletask.Worker.TaskDone();
-            }
+        // Update the task in the Tasks list 
+        var task = Tasks.Where(t => t.Id == id).First();
+        task.Result = result;
+        if (task is SubTask subTask)
+        {
+            // Signal the worker that the task is done
+            subTask.Worker.TaskDone();
+            // Signal the parent task that the work is done
+            MultipleTaskDone((MultipleTasks)subTask.ParentTask);
+        }
+        else if (task is SingleTask singleTask)
+        {
+            // Singal the worker that the task is done
+            singleTask.Worker.TaskDone();
+            // Remove Task from queue
+            Tasks.Remove(task);
+        }
     }
 }

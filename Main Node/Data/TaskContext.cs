@@ -1,7 +1,7 @@
 ﻿#nullable disable
 using Main_Node.Models;
 using Microsoft.EntityFrameworkCore;
-using Task = System.Threading.Tasks.Task;
+using Task = Main_Node.Models.Task;
 
 namespace Main_Node.Data;
 
@@ -12,10 +12,10 @@ public class TaskContext : DbContext
     {
     }
 
-    public DbSet<Models.Task> Task { get; set; }
-    public DbSet<Models.SubTask> SubTask { get; set; }
-    public DbSet<Models.MultipleTasks> MultipleTask { get; set; }
-    public DbSet<Models.SingleTask> SingleTask { get; set; }
+    public DbSet<Task> Task { get; set; }
+    public DbSet<SubTask> SubTask { get; set; }
+    public DbSet<MultipleTasks> MultipleTask { get; set; }
+    public DbSet<SingleTask> SingleTask { get; set; }
 
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -25,6 +25,5 @@ public class TaskContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        
     }
 }

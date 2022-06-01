@@ -16,6 +16,7 @@ public class PythonScripts
 
     public PythonScripts()
     {
+        // store the location of the scripts
         Scripts = new List<string>
         {
             $"{Environment.CurrentDirectory}\\Python\\Scripts\\test.py",
@@ -25,6 +26,12 @@ public class PythonScripts
         };
     }
 
+    /// <summary>
+    /// Runs a python script with the videopath as the first argument.
+    /// </summary>
+    /// <param name="algorithm"></param>
+    /// <param name="videopath"></param>
+    /// <returns></returns>
     public string Run(ScriptType algorithm, string videopath)
     {
         Console.WriteLine(algorithm);

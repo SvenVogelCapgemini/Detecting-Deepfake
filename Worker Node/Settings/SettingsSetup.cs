@@ -13,22 +13,29 @@ internal class SettingsSetup
 
     protected SettingsSetup()
     {
+        // if the settings file exists read it otherwise create new settings
         if (File.Exists(_settingsDir))
             ReadSettings();
         else
             CreateSettings();
     }
 
+    /// <summary>
+    ///     Reads the settings file and saves it in the variable Settings
+    /// </summary>
     public void ReadSettings()
     {
         var reader =
             new XmlSerializer(typeof(Setting));
         var file = new StreamReader(_settingsDir);
-        var settings = (Setting) reader.Deserialize(file);
+        var settings = (Setting)reader.Deserialize(file);
         file.Close();
         Setting = settings;
     }
 
+    /// <summary>
+    ///     Creates new settings with the option to save it to a file
+    /// </summary>
     private void CreateSettings()
     {
         Setting = new Setting();
@@ -49,6 +56,9 @@ internal class SettingsSetup
         }
     }
 
+    /// <summary>
+    ///     Writes the settings class to a file
+    /// </summary>
     public void WriteSettings()
     {
         var writer =

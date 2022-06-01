@@ -22,7 +22,7 @@ public class VideoDownloadTests
     [Test]
     public async Task TestYoutubeVideo()
     {
-        await Video.GetVideo("https://www.youtube.com/watch?v=xcJtL7QggTI", -1);
+        await Videos.Video.GetVideo("https://www.youtube.com/watch?v=xcJtL7QggTI", -1);
         System.Console.WriteLine(videopath);
         Assert.IsTrue(File.Exists(videopath));
     }

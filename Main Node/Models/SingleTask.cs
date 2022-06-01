@@ -1,5 +1,4 @@
-﻿
-using Main_Node.Workers;
+﻿using Main_Node.Workers;
 
 namespace Main_Node.Models;
 

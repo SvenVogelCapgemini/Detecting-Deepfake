@@ -19,7 +19,7 @@ internal class SignalRConnection
             opts.HttpMessageHandlerFactory = (message) =>
             {
                 if (message is HttpClientHandler clientHandler)
-                    // always verify the SSL certificate
+                    // always verify the SSL certificate as true
                     clientHandler.ServerCertificateCustomValidationCallback +=
                         (sender, certificate, chain, sslPolicyErrors) => { return true; };
                 return message;
@@ -47,12 +47,22 @@ internal class SignalRConnection
         });
     }
 
-
+    /// <summary>
+    /// Send the result to the main node
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="result"></param>
     public async void SendResult(int id, string result)
     {
         await _connection.InvokeAsync("ReceiveResult", id, result);
     }
 
+    /// <summary>
+    /// Send The status of the worker to the main node
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="status"></param>
+    /// <returns></returns>
     public async Task<bool> SendStatus(int id, TaskReceived.Status status)
     {
         switch (status)
@@ -93,11 +103,8 @@ internal class SignalRConnection
             var task = new TaskReceived(taskID, videoURL, script);
             task.RunTask();
         });
-
+        //When a user count is recieved
         _connection.On<int>("ReceiveUserCount", count => { Console.WriteLine($"connected users: {count} "); });
-
-        // TODO: Send the algorithms back
-        _connection.On<string>("GetAlgorithms", message => { Console.WriteLine("SendThemAlgo"); });
     }
 
     public static SignalRConnection Instance()

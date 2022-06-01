@@ -11,6 +11,11 @@ public class TaskHub : Hub
 {
     private readonly WorkerController _workerController = WorkerController.Instance();
 
+    /// <summary>
+    ///     Receive the status of the task from the worker.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="status"></param>
     public void ReceiveStatus(int id, string status)
     {
         var optionsBuilder = new DbContextOptionsBuilder<TaskContext>();
@@ -24,12 +29,20 @@ public class TaskHub : Hub
         }
     }
 
-    //recieves the status of the 
+    /// <summary>
+    ///     Receive the result of the task from the worker.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="result"></param>
     public void ReceiveResult(int id, string result)
     {
         WorkingTasksController.Instance().TaskDone(id, result);
     }
 
+    /// <summary>
+    ///     Gets called when a worker connects to the Hub.
+    /// </summary>
+    /// <returns></returns>
     public override Task OnConnectedAsync()
     {
         var worker = new Worker(Context.ConnectionId);
@@ -38,6 +51,11 @@ public class TaskHub : Hub
         return base.OnConnectedAsync();
     }
 
+    /// <summary>
+    ///     Gets called when a worker disconnects.
+    /// </summary>
+    /// <param name="exception"></param>
+    /// <returns></returns>
     public override Task OnDisconnectedAsync(Exception? exception)
     {
         try

@@ -1,6 +1,4 @@
-﻿@using Main_Node.Data
-@using Microsoft.EntityFrameworkCore
-@using Microsoft.AspNetCore.Mvc.TagHelpers
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model Main_Node.Models.Task
 
 @{
@@ -41,7 +39,7 @@
         {
             foreach (SubTask subTask in multipletask.Tasks)
             {
-                <hr />
+                <hr/>
                 <dt class="col-sm-2">
                     Id
                 </dt>
