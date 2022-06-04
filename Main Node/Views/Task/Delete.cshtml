@@ -29,6 +29,31 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Result)
         </dd>
+        @if (Model is MultipleTasks multipletask)
+        {
+            foreach (SubTask subTask in multipletask.Tasks)
+            {
+                <hr/>
+                <dt class="col-sm-2">
+                    Id
+                </dt>
+                <dd class="col-sm-10">
+                    @subTask.Id
+                </dd>
+                <dt class="col-sm-2">
+                    Methode
+                </dt>
+                <dd class="col-sm-10">
+                    @subTask.Method
+                </dd>
+                <dt class="col-sm-2">
+                    Result
+                </dt>
+                <dd class="col-sm-10">
+                    @subTask.Result
+                </dd>
+            }
+        }
     </dl>
 
     <form asp-action="Delete">

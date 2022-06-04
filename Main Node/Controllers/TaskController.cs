@@ -136,11 +136,21 @@ public class TaskController : Controller
     public async Task<IActionResult> Delete(int? id)
     {
         if (id == null) return NotFound();
-
+        // Find the task with the ID.
         var task = await _context.Task
             .FirstOrDefaultAsync(m => m.Id == id);
         if (task == null) return NotFound();
+        // Check if the task is a MultipleTask.
+        if (task is MultipleTasks)
+        {
+            // Get the MultipleTasks with the tasks field
+            var multipleTasks =
+                await _context.MultipleTask.Include(mt => mt.Tasks).FirstOrDefaultAsync(m => m.Id == id);
+            // return the task with the Tasks field 
+            return View(multipleTasks);
+        }
 
+        // If its not a multiple task return the task
         return View(task);
     }
 
@@ -151,7 +161,20 @@ public class TaskController : Controller
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
         var task = await _context.Task.FindAsync(id);
+        if (task is MultipleTasks)
+        {
+            // Get the MultipleTasks with the tasks field
+            var multipleTasks =
+                await _context.MultipleTask.Include(mt => mt.Tasks).FirstOrDefaultAsync(m => m.Id == id);
+            // return the task with the Tasks field
+            foreach (var t in multipleTasks.Tasks)
+            {
+                _context.Task.Remove(t);
+            }
+            
+        }
         _context.Task.Remove(task);
+        
         await _context.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
     }
