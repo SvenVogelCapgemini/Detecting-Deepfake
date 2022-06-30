@@ -1,4 +1,4 @@
-#Zelfgehoste github runner toe aan dit project
+# Zelfgehoste github runner toe aan dit project
 Voor dit project heb je een een zelfgehoste github-runner nodig voor het uitvoeren van de unittests.
 Dit komt door dat python nodig is om deze uit te voeren. 
 om dit te doen heb je eerst een computer nodig die je als runner wilt gebruiken.
